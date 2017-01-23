@@ -13,16 +13,24 @@
 class DentalState(object):
     """
     """
-    def __init__(self):
+    def __init__(self,name,status=false):
         """"""
-        pass
+        self.name = name
+        self.status = status
+
+    def changeStatus(self, s):
+		self.status = s
 
 class DentalProblem(object):
     """
     """
-    def __init__(self):
+    def __init__(self, name, status=false):
         """"""
-        pass
+        self.name = name
+        self.status = status
+
+    def changeStatus(self, s):
+		self.status = s
 
 class DentalObservable(object):
     """
