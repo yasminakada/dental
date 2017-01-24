@@ -79,35 +79,38 @@ class DentalModel(object):
 Dental State
 ---------------------------------
 """
+
 class StateGum(DentalState):
 	"""
-    """
-    def __init__(self):
-        """"""
-        self.state = ["normal", "slight inflammation", "severe inflammation"]
-        self.recession = [True,False]
+	"""
+	def __init__(self):
+		""""""
+		self.state = ["normal", "slight inflammation", "severe inflammation"]
+		self.recession = [True,False]
+
 
 class StateEnamel(DentalState):
 	"""
-    """
-    def __init__(self):
-        """"""
-        self.state = ["normal", "cracked", "broken", "cavity"]
+	"""
+	def __init__(self):
+		""""""
+		self.state = ["normal", "cracked", "broken", "cavity"]
+
 
 class StatePulp(DentalState):
 	"""
-    """
-    def __init__(self):
-        """"""
-        self.state = ["normal", "inflamation"]
+	"""
+	def __init__(self):
+		""""""
+		self.state = ["normal", "inflamation"]
 
 
 class StateApex(DentalState):
 	"""
-    """
-    def __init__(self):
-        """"""
-        self.state = ["normal", "inflamation"]
+	"""
+	def __init__(self):
+		""""""
+		self.state = ["normal", "inflamation"]
 
 
 """
@@ -142,7 +145,7 @@ class ObservablePain(DentalObservable):
     """
     """
     def __init__(self):
-        """"""
+    	""""""
         # TODO: check pain symptom/sign diagram probably can remove symptom and sign and 
         # leave it at subjective and objective observables
         self.paintype = ["throbbing", "sharp"]
@@ -159,14 +162,14 @@ class ObservableSwelling(DentalObservable):
     """
     """
     def __init__(self):
-        """"""
-        self.status = [True,False]
+    	""""""
+    	self.status = [True,False]
 
 class ObservableTooth(DentalObservable):
     """
     """
     def __init__(self):
-        """"""
+    	""""""
         self.number = range(1,32)# number? What does this number refer to?
         self.recent_treatment_bump = [True,False]
 
@@ -174,13 +177,13 @@ class ObservableGums(DentalObservable):
     """
     """
     def __init__(self):
-        """"""
-        self.bleeding = [True,False]
-        self.colour = self.color = ["bright_red", "normal"]
+    	""""""
+    	self.bleeding = [True,False]
+    	self.colour = self.color = ["bright_red", "normal"]
 
 class ObservableCommonCold(DentalObservable):
     """
     """
     def __init__(self):
-        """"""
-        self.status = [True,False]        
+    	""""""
+    	self.status = [True,False]        
