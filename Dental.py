@@ -6,7 +6,7 @@
 #		And write out all rules, or have some structure (graph or something) and
 #		And have the code automatically find his way?
 # TODO: interface python
-
+# TODO: add hash to classes.
 
 # Using a graph:
 # http://stackoverflow.com/questions/4901815/object-of-custom-type-as-dictionary-key
@@ -23,24 +23,24 @@
 class DentalState(object):
     """
     """
-    def __init__(self,name,status=False):
+    def __init__(self):
         """"""
-        self.name = name
         self.status = ["healthy", "unhealthy"]
 
-    def changeStatus(self, s):
+	def changeStatus(self, s):
 		self.status = s
+
 
 class DentalProblem(object):
     """
     """
     def __init__(self, name, status=False):
         """"""
-        self.name = name
         self.status = [True,False]
 
     def changeStatus(self, s):
 		self.status = s
+
 
 class DentalObservable(object):
     """
@@ -52,11 +52,11 @@ class DentalObservable(object):
 class Treatment(object):
     """
     """
-    def __init__(self, name):
+    def __init__(self):
         """"""
-        self.name = name
         self.status = [True,False]
         self.time = range(5,95,5)
+
         
 class DentalModel(object):
 	"""
@@ -124,10 +124,12 @@ class ProblemTooth(DentalProblem):
 	"""
 	pass
 
+
 class ProblemGums(DentalProblem):
 	"""
 	"""
 	pass
+
 
 class ProblemOther(DentalProblem):
 	"""
@@ -158,12 +160,14 @@ class ObservablePain(DentalObservable):
         self.pain_bending_stairs = [True,False]
         self.duration = ["short","medium", "long"] # This might need some translation into measurable times
 
+
 class ObservableSwelling(DentalObservable):
     """
     """
     def __init__(self):
     	""""""
     	self.status = [True,False]
+
 
 class ObservableTooth(DentalObservable):
     """
@@ -173,6 +177,7 @@ class ObservableTooth(DentalObservable):
         self.number = range(1,32)# number? What does this number refer to?
         self.recent_treatment_bump = [True,False]
 
+
 class ObservableGums(DentalObservable):
     """
     """
@@ -180,6 +185,7 @@ class ObservableGums(DentalObservable):
     	""""""
     	self.bleeding = [True,False]
     	self.colour = self.color = ["bright_red", "normal"]
+
 
 class ObservableCommonCold(DentalObservable):
     """
