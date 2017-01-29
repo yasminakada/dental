@@ -482,7 +482,6 @@ def checkDiagnosis(diagnoses, askedlist, manifestation_rules):
             print "++++ Check: ", diagnose, " ++++"
             dp = diagnose
             plist,question = getQuestion(dp, askedlist, manifestation_rules)
-            print " TEST"
             if not plist or not question: #When no questions are left for this dp
                 counter+=1
                 print "The diagnose fits the description: ", dp
