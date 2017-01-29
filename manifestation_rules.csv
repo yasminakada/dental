@@ -1,6 +1,6 @@
 NAMEORKEY,ALTNAME,DESCRIPTION,TYPEDP,pain.onset,pain.jaw,pain.course,pain.reaction_to_cold,pain.reaction_to_heat,pain.reaction_to_pressure,pain.duration,pain.paintype,gums.bleeding,tooth.recent_treatment_bump,pain.location,pain.source,pain.pain_bending_stairs,swelling.status,tooth.number,gums.colour,commoncold.status
 sinusitis,,,other,,upper,,,,,,,,,unkown,multiple_teeth,TRUE,FALSE,,,TRUE
-pocket,,,gums,,,,,,,,,,,,,FALSE,,,,
+pocket,,,gums,,,,,,,,,,,,particular_tooth,FALSE,,,,
 other than teeth,,,other,,,,,,,,,,,unkown,,,FALSE,,,
 abces,,,other,,,,,,,,throbbing,,,,,,TRUE,,,
 gingivitis,,,,recent,,worsened_or_same,increase,,,short,,TRUE,,known,,,,3,,
