@@ -1,18 +1,8 @@
 
-# TODO: Decide on a way to represent DS's, DP's etc. Most likely as an object.
-# TODO: Store all types of DP's in some form (dict or list)
-# TODO: Research method: How do we connect them? Some kind of semantics? 
-#		Will we do this rule-based 
-#		And write out all rules, or have some structure (graph or something) and
-#		And have the code automatically find his way?
-# TODO: interface python
-# TODO: add hash to classes.
-
-# Using a graph:
-# http://stackoverflow.com/questions/4901815/object-of-custom-type-as-dictionary-key
-
 
 import csv
+
+#This document only contains the classes
 
 
 """
@@ -29,9 +19,6 @@ class DentalState(object):
     def __init__(self):
         """"""
         self.status = ["healthy", "unhealthy"]
-
-	def changeStatus(self, s):
-		self.status = s
 
 
 class DentalProblem(object):
@@ -61,11 +48,13 @@ class DentalObservable(object):
 class Treatment(object):
     """
     """
-    def __init__(self, name = ""):
+    def __init__(self,name="",alt_name="", description="",time=0):
         """"""
         self.name = name
+        self.alt_name = alt_name #alternative names
+        self.description = description #Some kind of description of the problem
         self.status = [True,False]
-        self.time = range(5,95,5)
+        self.time = time
     
     def __str__(self):
         return "<<TREATMENT:"+ self.name +">>"
@@ -180,7 +169,7 @@ class ObservablePain(DentalObservable):
             "course": [["worsened_or_same", "reduced"],"Has the pain changed from when you first experienced it?"],\
             "pain_bending_stairs":  [["TRUE","FALSE"], "Does the pain increase when bending or taking the stairs?"],\
             "duration": [["short","medium", "long"],"After the cold/hot/pressur stimulus, how long do you feel the pain?"] \
-            } # This might need some translation into measurable times
+            } 
             
         self.paintype = [["throbbing", "sharp"], "Would you describe the pain as nagging/throbbing or sharp/stinging?"]
         self.jaw = [["upper", "lower"], "Is the pain in the upper or lower jaw?"]
@@ -303,353 +292,3 @@ class ObservableCommonCold(DentalObservable):
 
     def __repr__(self):
         return "<<DO-COMMONCOLD>>" 
-
-
-
-"""
-=========================
--------------------------
-    INSTANCES
--------------------------
-=========================
-"""
-
-"""
--------------------------
-    States - DS's
--------------------------
-"""
-
-ds_gums =  StateGum()
-ds_enamel = StateEnamel()
-ds_pulp = StatePulp()
-ds_dentine = StateDentine()
-ds_apex = StateApex()
-
-"""
--------------------------
-    Problems | DP's
--------------------------
-"""
-# Add name variable to the classes, initially set to None, later changed in official naming
-# Add description as a variable as well
-
-dp_dict = {} # Dental problem dictionary
-do_dict = {} # Dental Observable
-
-dp_names_tooth = ["reversible pulpitis", "irreversible pulpitis",\
-    "cavity", "periapical periodontitis", "treatment pain", \
-    "sensitive tooth neck", "periodontitis"]
-
-dp_names_gums = ["gingival recession", "gingivitis", "pocket"]
-
-dp_names_other = ["sinusitis", "need examination",\
-    "abces", "other than teeth", "no emergency", \
-    "uncertain"]
-
-# Create DP's and put them in the dictionary
-for i in dp_names_tooth:
-    dp_dict[i] = [ProblemTooth(i)]
-
-#Create DP's and put them in the dictionary
-for i in dp_names_gums:
-    dp_dict[i] = [ProblemGums(i)]
-
-for i in dp_names_other:
-    dp_dict[i] = [ProblemOther(i)]
-    # print dp_dict[i]
-
-"""
--------------------------
-    Observables- DO's
--------------------------
-"""
-
-do_pain = ObservablePain()
-do_swelling = ObservableSwelling()
-do_tooth = ObservableTooth()
-do_gums = ObservableGums()
-do_commoncold = ObservableCommonCold()
-
-do_dict = {"pain":do_pain, "swelling":do_swelling, "tooth":do_tooth, "gums":do_gums, "commoncold":do_commoncold}
-
-"""
--------------------------
-    Treatment - T's
--------------------------
-"""
-treatment_dict = {} # Treatment dictionary
-
-t_names = ["drain", "further examination", "nasal drops or antibiotics", \
-    "extraction", "denture syringing and rinse advice" \
-    "extraction","reasure", "painkillers sensodyne", "root canal treatment"]
-
-# Create treatments and put them in the dictionary
-for i in t_names:
-    treatment_dict[i] = Treatment(i)
-    # print treatment_dict[i]
-
-
-"""
-=========================
--------------------------
-    MODEL / RULES
--------------------------
-=========================
-"""
-
-"""
--------------------------
-    Manifestation rules
--------------------------
-"""
-
-
-
-# response = raw_input("Enter observable type, seperated by a comma. Example-> pain.onset,recent" )
-
-# Get all diagnoses from the manifestation rules.
-def getAllDiagnoses(manrules):
-    l=[]
-    for rule in manrules:
-        if rule[0] not in l:
-            l.append(rule[0])
-    return l
-
-# Find diagnoses that fit the observable description given
-# Order on exact matches then possible matches
-def findDiagnoses(manrules, painlist=[],diagnose_list = []):
-    #manrules = manifestation_rules
-    #painlist = ["do name like swelling", "attribute","value"]
-    l = []
-    possible = []
-
-    print "Trying to shorten list...."
-    for rule in manrules:
-        dp = rule[0]
-        if dp in diagnose_list: #Use list of diagnoses that were already found earlier
-            if rule[2] == painlist[0] and rule[3] == painlist[1]:
-                if rule[4] == painlist[2]:
-                    print "--Exact match: ", dp
-                    l.append(dp)
-                elif rule[4]=="":
-                    print "--Possible match: ", dp
-                    possible.append(dp)
-                else:
-                    print "--Remove - not a match: ", dp
-    if len(l) == 0:
-        print " ****** NO EXACT MATCHES FOUND ******"
-    l.extend(possible) # When a dp does not have a value, this problem is added to the end of the list as s possibility
-    
-    return l
-
-# Look voor an observable attribute that is a manifestation of the DP (dental problem)
-def getQuestion(dp, askedlist,manrules):
-    for rule in manifestation_rules:
-        if rule[0] == dp:
-            p = rule[2]
-            a = rule[3]
-            v = rule[4]
-            if [p,a,v] not in askedlist and v!="":
-                return [[p,a,v], do_dict[p].getQuestion(a)]
-    return False,False
-
-# Ask about this observable attribute
-def askQuestion(question):
-    constrained_input = question[0]
-    q = question[1]
-
-    print q
-    for i, item in enumerate(constrained_input):
-        print "[ ", i," ]  ", item
-    return 
-
-# Retrieve the answer
-def getAnswer(question):
-    response = input(">>>")
-    return question[0][response]
-
-# Check the diagnoses left and ask next question
-# When there are no conclusive questions to be asked, you get an exact match
-# Meaning the probability of this problem is high
-# Ask if you want to check other diagnoses when the list has more than 1 diagnosis still
-def checkDiagnosis(diagnoses, askedlist, manifestation_rules):
-    keepgoing = True
-    print "++++ Specify ++++"
-    counter = 0 # Count how many times no questions could be generated.
-    if len(dia)>=1:
-        for diagnose in diagnoses:
-            print "++++ Check: ", diagnose, " ++++"
-            dp = diagnose
-            plist,question = getQuestion(dp, askedlist, manifestation_rules)
-            if not plist or not question: #When no questions are left for this dp
-                counter+=1
-                print "The diagnose fits the description: ", dp
-                if len(diagnoses) == 1:
-                    print "There are no other diagnoses to cover"
-                    keepgoing = False
-                    break
-                response = input("Do you want to check the remaining diagnoses? 0 or 1:  ")
-                if not response:
-                    print "Diagnoses are: ", diagnoses
-                    print "Diagnoses to base appointment on: ", dp
-                    keepgoing = False
-                    break
-                else: 
-                    continue
-            break
-    if len(diagnoses) == counter: # All questions have been asked.
-        print "There are no questions left. End of program."
-        print "Diagnoses are: ", diagnoses 
-        keepgoing = False
-    
-    return keepgoing,plist,question    
-
-    
-
-
-if __name__ == "__main__":
-    manifestation_rules = []
-
-    # with open('manifestation_rules.csv') as csvfile:
-    with open('mr2.csv') as csvfile:
-        readCSV = csv.reader(csvfile, delimiter=',')
-        manifestation_titles = readCSV.next()
-        observable_att_list = []
-
-        for row in readCSV:
-            dp = DentalProblem(row[0],row[1],row[2])
-            base = [dp, "manifestation"]
-            for i in range(4,len(row)):
-                # if len(row[i]) == 0: 
-                #     continue # If there is no value, meaning no effect on this observable
-                observable_type, observable_attribute = manifestation_titles[i].split(".")
-                observable_att_list.append(observable_attribute)
-                new_rule = []
-                new_rule.extend(base)
-                new_rule.extend([observable_type, observable_attribute, row[i]])
-                manifestation_rules.append(new_rule) # example [dp, "manifests", "pain", "onset", "recent"]
-
-
-    # print manifestation_rules
-
-
-    askedlist =[]
-    keepgoing = True
-
-    dia = getAllDiagnoses(manifestation_rules)
-
-    print "========================== \n"
-    print "========================== \n"
-    print "ALL Diagnoses: ", dia
-
-    while keepgoing:
-        print "========================== \n"
-        print "========================== \n"
-        if len(dia)>=1:
-            keepgoing, plist,question = checkDiagnosis(dia,askedlist,manifestation_rules)
-
-            if keepgoing:
-                askQuestion(question)
-                plist[2] = getAnswer(question)
-                askedlist.append(plist)
-                print askedlist
-
-                dia = findDiagnoses(manifestation_rules,plist,dia)
-                print ""
-                print dia
-                if len(dia) == 0:
-                    keepgoing = False
-        else:
-            print "There are no diagnoses found. Has to be determined by dentist."
-            keepgoing = False
-
-
-
-
-
-
-
-# askedlist =[]
-# keepgoing = True
-# response = raw_input(" Vul in observable,attribute,value: \n")
-# plist = response.split(",")
-# dia = findDiagnoses(manifestation_rules,plist)
-# print dia
-# if len(dia)<=1:
-#     keepgoing = False
-
-# while keepgoing:
-#     if len(dia)>=1:
-#         prompt = getQuestion()
-#         response = raw_input(" Vul in observable,attribute,value: \n")
-#         plist = response.split(",")
-#         dia = findDiagnoses(manifestation_rules,plist,dia)
-#         print dia
-#         if len(dia)<=1:
-#             keepgoing = False
-
-# print "Diagnose: ", dia
-
-
-
-# askedlist =[]
-# keepgoing = True
-
-# dia = getAllDiagnoses(manifestation_rules)
-
-# print "Diagnose: ", dia
-
-# print ""
-# print dia
-
-# while keepgoing:
-#     if len(dia)>=1:
-#         print "test1"
-#         for i in dia: # If only one exact match was found, next one diagnoses can be asked about
-#             print "after while"
-#             dp = dia[counter]
-#             plist, question = getQuestion(dp, askedlist, manifestation_rules)
-#             if not plist or not prompt:
-#                 print "Diagnose has been found, only one exact match >>> ", dp
-#                 check = input("Go on with next? 0 or 1: ")
-#                 if check:
-#                     continue
-#                 elif not check:
-#                     keepgoing = False
-#                     break
-#                 counter += 1
-#             check = 0
-
-
-
-#         possible_input = question[0] #Possible input is stored here
-#         q = question[1]
-
-#         print q
-#         for i in range(len(possible_input)):
-#             print i, " -> ", possible_input[i]
-#         response = input(">>> ")
-#         plist[2] = possible_input[response] # Change the p,a,v such that it fits the description given by patient
-#         askedlist.append(plist) # Add pain, attribute to askedlist to not ask again
-#         print "Asked: ", askedlist
-#         dia = findDiagnoses(manifestation_rules,plist,dia)
-#         print ""
-#         print dia
-#         if len(dia)==0:
-#             keepgoing = False
-
-
-
-# if dp_dict["sinusitis"].status == True:
-#     do_pain.pain_bending_stairs = True
-#     do_commoncold.status = True
-#     do_pain.source = "multiple_teeth"
-#     do_pain.location = "unkown"
-#     do_swelling.status = False
-
-# if dp_dict["pocket"].status == True:
-#     do_pain.pain_bending_stairs = False
-
-# print do_pain.set_duration
-# print do_pain.set_duration == do_pain.set_duration
